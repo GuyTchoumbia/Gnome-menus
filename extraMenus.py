@@ -101,9 +101,7 @@ class zipMenuProvider(GObject.GObject, Nautilus.MenuProvider):
     def extract_here(self, _, files) -> None:
 
         file_location_paths =  [f"'{file.get_location().get_path()}'" for file in files]
-        print(file_location_paths)
         files_string = " ".join(file_location_paths)
-        print(files_string)
         script = f'for file in {files_string}; do 7z x "$file" -o"$(dirname "$file")"; done; exec'
         
         subprocess.Popen(["gnome-terminal", "--", "bash", "-c" , script], cwd=os.path.dirname(file_location_paths[0].strip("'")))
@@ -112,14 +110,9 @@ class zipMenuProvider(GObject.GObject, Nautilus.MenuProvider):
     def extract_to(self, _, files) -> None:
 
         file_location_paths =  [f"'{file.get_location().get_path()}'" for file in files]
-        # for file in file_location_paths:
-        #     subprocess.Popen(["7z", "x", file, "-o*"], cwd=os.path.dirname(file))
         files_string = " ".join(file_location_paths)
-        print(file_location_paths)
-        print(files_string)
         script = f'for file in {files_string}; do 7z x "$file" -o"$(dirname "$file")"/*; done; exec'
         subprocess.Popen(["gnome-terminal", "--", "bash", "-c" , script])
-            # subprocess.Popen(["gnome-terminal"], stderr=f)
         
 
         
