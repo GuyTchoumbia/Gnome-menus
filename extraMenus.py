@@ -25,7 +25,7 @@ class FehMenuProvider(GObject.GObject, Nautilus.MenuProvider):
     def open_with_feh(self, user_data, files: List[Nautilus.FileInfo]) -> None:
         
         file_paths = [file.get_location().get_path() for file in files]
-        process = subprocess.Popen(["feh", "--recursive", "-dF"] + file_paths, stderr=subprocess.PIPE)
+        process = subprocess.Popen(["feh", "--recursive", "-dF", "--sort", "filename", "--version-sort"] + file_paths, stderr=subprocess.PIPE)
         # TODO do all the stuff below in the same process, see multiprocessing in python
         # process.wait() 
         # print(process.returncode)
@@ -111,7 +111,7 @@ class zipMenuProvider(GObject.GObject, Nautilus.MenuProvider):
 
         file_location_paths =  [f"'{file.get_location().get_path()}'" for file in files]
         files_string = " ".join(file_location_paths)
-        script = f'for file in {files_string}; do 7z x "$file" -o"$(dirname "$file")"/*; done; exec'
+        script = f'for file in {files_string}; do 7z x "$file" -o"$(dirname "$file")"/*; status=$?; [ $status -eq 0 ] && rm "$file"; done; exec'
         subprocess.Popen(["gnome-terminal", "--", "bash", "-c" , script])
         
 
